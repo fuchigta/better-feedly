@@ -1,0 +1,43 @@
+name: "Release"
+on:
+  push:
+    branches:
+      - master
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - name: Cache pnpm modules
+        uses: actions/cache@v4
+        with:
+          path: ~/.pnpm-store
+          key: ${{ runner.os }}-${{ hashFiles('**/pnpm-lock.yaml') }}
+          restore-keys: |
+            ${{ runner.os }}-
+      - uses: pnpm/action-setup@v4
+        with:
+          version: latest
+          run_install: true
+      - name: Use Node.js LTS
+        uses: actions/setup-node@v4
+        with:
+          node-version: lts/*
+          cache: "pnpm"
+      - name: Build the extension
+        run: pnpm build
+      - name: Package the extension into a zip artifact
+        run: pnpm package
+      - name: Set Time
+        env:
+          TZ: "Asia/Tokyo"
+        run: echo "CURRENT_DATETIME=$(date +'%Y%m%d-%H%M%S')" >> $GITHUB_ENV
+      - name: Create Release
+        uses: softprops/action-gh-release@v2
+        with:
+          tag_name: ${{ env.CURRENT_DATETIME }}
+          name: ${{ env.CURRENT_DATETIME }}
+          draft: false
+          prerelease: false
+          files: build/chrome-mv3-prod.zip
