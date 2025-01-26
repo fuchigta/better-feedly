@@ -28,11 +28,14 @@ async function getCurrentTabFeedURL() {
 function IndexPopup() {
   useEffect(() => {
     getCurrentTabFeedURL().then((res) => {
-      if (res) {
-        window.open(
-          `https://feedly.com/i/subscription/feed${encodeURIComponent("/" + res)}`
-        )
+      if (!res) {
+        window.close()
+        return
       }
+
+      window.open(
+        `https://feedly.com/i/subscription/feed${encodeURIComponent("/" + res)}`
+      )
     })
   }, [])
   return null
