@@ -2,7 +2,7 @@ import { useEffect } from "react"
 
 function getFeedURL() {
   const rssLink: any = document.querySelector(
-    'link[type="application/rss+xml"]'
+    'link[type="application/rss+xml"], link[type="application/atom+xml"]'
   )
   if (rssLink) {
     return rssLink.href
