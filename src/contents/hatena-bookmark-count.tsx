@@ -9,7 +9,8 @@ export const config: PlasmoCSConfig = {
   matches: [
     "https://feedly.com/i/*",
     "https://connpass.com/*",
-    "https://www.google.com/*"
+    "https://www.google.com/*",
+    "https://gacco.org/course/*"
   ]
 }
 
@@ -43,6 +44,13 @@ export const getInlineAnchorList: PlasmoGetInlineAnchorList = async () => {
     }))
   }
 
+  if (url.startsWith("https://gacco.org/course/")) {
+    return Array.from(document.querySelectorAll("a.c-card")).map((element) => ({
+      element,
+      insertPosition: "beforebegin"
+    }))
+  }
+
   return null
 }
 
@@ -50,14 +58,22 @@ export const getStyle: PlasmoGetStyle = () => {
   const style = document.createElement("style")
   style.textContent = `
     #plasmo-shadow-container {
-      z-index: 1 !important
+      z-index: 1 !important;
+    }
+    .bcounter {
+      transform: scaleY(-1) !important;
     }
   `
   return style
 }
 
+function removeQueryParams(url: string) {
+  const parsed = new URL(url)
+  return `${parsed.origin}${parsed.pathname}`
+}
+
 function HatenaBookarkCount({ anchor }: PlasmoCSUIProps) {
-  const href = (anchor.element as any).href
+  const href = removeQueryParams((anchor.element as any).href)
   return (
     <span>
       <img
