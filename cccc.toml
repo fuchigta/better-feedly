@@ -1,0 +1,9 @@
+# cccc (https://github.com/moznion/cccc) の設定
+# 関数ごとの複雑度がこの閾値を超えると cccc は非ゼロで終了し、CI が失敗する。
+#
+# 閾値は一般的に用いられる標準的な値を採用している。
+# 導入時点の実測値（3ファイル・13関数）は認知的複雑度 max 4、循環的複雑度 max 5
+# （いずれも src/contents/hatena-bookmark-count.tsx の getInlineAnchorList）であり、
+# 閾値に対して十分な余裕がある。
+max-cognitive = 15
+max-cyclomatic = 10
