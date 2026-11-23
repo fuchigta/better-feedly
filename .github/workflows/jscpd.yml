@@ -1,0 +1,41 @@
+name: jscpd
+
+# コピー＆ペーストによる重複が増えていないかを確かめる。jscpd は package.json の依存に
+# 入れず、npx の版指定で固定する。設定は .jscpd.json にあり、JSON にはコメントを
+# 書けないので設定の根拠はここに残す。
+#
+# - 版: jscpd 5.4.3（Rust エンジン）
+# - 検出の基準: 既定値（min-tokens 50・min-lines 5・mode mild）で exact のみ。
+#   .gitignore は既定で除外される（node_modules/・build/・.plasmo/ など）
+# - 実測（2026-11-23）: 7 ファイル・0 クローン、重複率は行 0.00%・トークン 0.00%（この jscpd.yml を含む）
+#   （src/ の tsx 2 ファイル、package.json、.prettierrc.mjs、check.yml・release.yml・jscpd.yml。
+#   tsconfig.json・cccc.toml は min-tokens 未満などで測定に入らない）
+# - threshold: 行の重複率と比べられ、超えたときだけ失敗する（実測 0% では threshold 0 でも
+#   通る）。0.5 に置くと、jscpd が拾う最小級のクローンでも落ちることを確認済みで、新しい
+#   重複を止めるゲートとして働く（12 行・55 トークンの一時的なクローンで行 3.92% となり
+#   失敗）。重複が必要になって実測が上がる場合は、差分レビューで妥当性を確かめてから
+#   threshold を上げる
+# - ignore（除外しないと 9 ファイル・1 クローン・行 0.74%・トークン 0.36%。この jscpd.yml を含む）:
+#   - pnpm-lock.yaml: pnpm の生成物のため外す（lock 内の 50 行・119 トークンの 1 クローン）
+#   - README.md: ドキュメントで製品コードではないため外す（クローンは無い）
+#   - assets/icon.png はバイナリで測定に入らないため、ignore に書いていない
+#   - 手元で測るときは --ignore を渡さず .jscpd.json を使う。CLI の --ignore は .jscpd.json の
+#     ignore に足されるのではなく置き換えるため、数値がずれる
+on:
+  push:
+    branches:
+      - main
+  pull_request:
+
+permissions:
+  contents: read
+
+jobs:
+  jscpd:
+    name: jscpd
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: jscpd
+        run: npx --yes jscpd@5.4.3 --no-tips --no-colors .
