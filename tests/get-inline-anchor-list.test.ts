@@ -79,6 +79,18 @@ describe("getInlineAnchorList", () => {
     expect(anchors).toEqual([{ element: link, insertPosition: "beforebegin" }])
   })
 
+  test("gacco では /course/ 配下のページでもコースカードのリンクの前に差し込む", async () => {
+    setPageURL("https://gacco.org/course/ga001/")
+    document.body.innerHTML =
+      '<a class="c-card" href="https://gacco.org/course/ga002/">1</a>' +
+      '<a class="other" href="https://gacco.org/course/ga003/">2</a>'
+    const link = document.querySelector("a.c-card")
+
+    const anchors = await getInlineAnchorList()
+
+    expect(anchors).toEqual([{ element: link, insertPosition: "beforebegin" }])
+  })
+
   test("対象サイトでも該当するリンクが無ければ空配列を返す", async () => {
     setPageURL("https://feedly.com/i/latest")
 

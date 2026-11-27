@@ -9,8 +9,11 @@
 import { readFileSync } from "node:fs"
 
 const REPORT = "reports/mutation/mutation.json"
-// 2026-11-27 の実測: 有効ミュータント 71 件、検出 43、Survived 7、NoCoverage 21
-const MAX_UNDETECTED = 28
+// 2026-11-27 の実測（導入時）: 有効ミュータント 71 件、検出 43、Survived 7、NoCoverage 21 → 上限 28
+// 2026-11-27 の実測（穴埋め後）: 有効ミュータント 71 件、検出 71、Survived 0、NoCoverage 0
+//   全件実行 3 回で同じ結果。等価ミュータントは // Stryker disable で除外済みの 1 件だけなので、
+//   余裕を持たせず 0 に置く。新しい等価ミュータントが出たら、上限を上げずに除外コメントで扱う。
+const MAX_UNDETECTED = 0
 
 const report = JSON.parse(readFileSync(REPORT, "utf8"))
 
