@@ -26,6 +26,10 @@ async function getCurrentTabFeedURL() {
 }
 
 function IndexPopup() {
+  // 依存配列 [] を ["Stryker was here"] に変えても、定数だけの依存配列なので初回マウント時に
+  // 1 回だけ実行されることは変わらず、区別できない（等価ミュータント）。この範囲の配列リテラルは
+  // 依存配列だけなので、ArrayDeclaration の除外は他のミュータントを隠さない。
+  // Stryker disable ArrayDeclaration: 定数だけの依存配列は [] と等価
   useEffect(() => {
     getCurrentTabFeedURL().then((res) => {
       if (!res) {
@@ -38,6 +42,7 @@ function IndexPopup() {
       )
     })
   }, [])
+  // Stryker restore ArrayDeclaration
   return null
 }
 
