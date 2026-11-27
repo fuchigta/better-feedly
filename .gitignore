@@ -41,3 +41,7 @@ keys.json
 # Claude Code
 .claude/settings.local.json
 .claude/plans/
+
+# StrykerJS (mutation testing)
+/reports/
+.stryker-tmp/
