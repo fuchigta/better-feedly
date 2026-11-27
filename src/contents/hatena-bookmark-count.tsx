@@ -67,7 +67,7 @@ export const getStyle: PlasmoGetStyle = () => {
   return style
 }
 
-function removeQueryParams(url: string) {
+export function removeQueryParams(url: string) {
   const parsed = new URL(url)
   return `${parsed.origin}${parsed.pathname}`
 }

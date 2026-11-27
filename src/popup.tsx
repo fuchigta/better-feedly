@@ -1,6 +1,6 @@
 import { useEffect } from "react"
 
-function getFeedURL() {
+export function getFeedURL() {
   const rssLink: any = document.querySelector(
     'link[type="application/rss+xml"], link[type="application/atom+xml"]'
   )
